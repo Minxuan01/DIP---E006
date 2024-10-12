@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>News Feed</title>
+
+        <link rel = "stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="content">
+            <h1>News</h1>
+            <div class="buttons">
+                <button onclick="showSection('drugs')">Drugs</button>
+                <button onclick="showSection('vape')">Vape</button>
+            </div>
+
+            <!-- Drugs Section -->
+            <div class="news-section" id="drugs">
+                <div id="drugs-articles"></div>
+            </div>
+
+            <!-- Vape Section -->
+            <div class="news-section" id="vape">
+                <div id="vape-articles"></div>
+            </div>
+
+            <script src="script.js"></script>
+
+            <h2>Widgets</h2>
+            <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+            <div class="elfsight-app-dc490f70-74fc-4fa8-9ba0-c297a439097c" data-elfsight-app-lazy></div>
+            <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+            <div class="elfsight-app-4f88b1a8-e15e-4122-ae7d-fab7c9794389" data-elfsight-app-lazy></div>
+
+            <h2>YouTube Videos</h2>
+            <div class="videoWrapper">
+            <iframe src="https://www.youtube.com/embed?listType=playlist&list=UULFF1-Gmt5bqgpq8T0mxPuEdQ"></iframe>
+            </div>
+            <div class="videos">
+                <div class="box">
+                    <iframe src="https://www.youtube.com/embed?listType=playlist&list=UULFF1-Gmt5bqgpq8T0mxPuEdQ&index=2" 
+                    frameborder="0" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed?listType=playlist&list=UULFF1-Gmt5bqgpq8T0mxPuEdQ&index=3" 
+                    frameborder="0" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed?listType=playlist&list=UULFF1-Gmt5bqgpq8T0mxPuEdQ&index=4" 
+                    frameborder="0" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed?listType=playlist&list=UULFF1-Gmt5bqgpq8T0mxPuEdQ&index=5" 
+                    frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

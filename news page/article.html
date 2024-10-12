@@ -1,0 +1,29 @@
+<!-- This was meant to be the article page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article</title>
+
+    <link rel = "stylesheet" href="styles.css">
+</head>
+<body>
+    <script>
+        const articleTitle = localStorage.getItem('articleTitle');
+        const articleImage = localStorage.getItem('articleImage');
+        const articleDate = localStorage.getItem('articleDate');
+        const articleSnippet = localStorage.getItem('articleSnippet');
+
+        document.write(`
+            <div style="min-height: 100vh;">
+                <div class="articleContent">
+                    <h2>${articleTitle}</h2>
+                    <img src="${articleImage}" style="display: flex; justify-content: center; width: 100%; height: auto; ">
+                    <h3>${articleDate}</h3>
+                    <p>${articleSnippet}</p>   
+                </div> 
+            </div>        
+        `);
+    </script>
+</body>
