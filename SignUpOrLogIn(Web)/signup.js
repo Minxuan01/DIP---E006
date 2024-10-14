@@ -33,12 +33,17 @@ function signUp() {
                     window.location.href = "login.html"; // Redirect after signup
                 }).catch((error) => {
                     alert("Error: " + error.message);
-                });
-            } else {
-                alert("Please fill out all fields.");
+                 });
             }
+        }).catch ((error) => {
+            alert("Error checking username: " + error.message);
+        });        
+    } else {
+        alert("Please fill out all fields.");
         }
+    }
 
 // Make the function available globally
 window.signUp = signUp;
+
 
