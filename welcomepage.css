@@ -18,7 +18,6 @@ body {
     background-color: #D3D3D3;
     border-radius: 100px;
     padding: 200px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logo-container {
@@ -26,8 +25,8 @@ body {
 }
 
 .logo {
-    width: 400px;
-    height: auto;
+    width: 470px;
+    height: 350px;
 }
 
 .button-container {
