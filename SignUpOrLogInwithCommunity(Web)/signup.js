@@ -29,7 +29,7 @@ function signUp() {
                     password: password,
                     recoveryCode: recoveryCode
                 }).then(() => {
-                    alert("Your unique code is: " + recoveryCode);
+                    alert("Your unique 6-digit recovery code is: " + recoveryCode + "\n" + "Please note this down for future reference.\n" + "Code number will be required to change password.");
                     window.location.href = "login.html"; // Redirect after signup
                 }).catch((error) => {
                     alert("Error: " + error.message);
