@@ -74,33 +74,20 @@ button {
   cursor: pointer;
 }
 
-.videos {
+.container {
   display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 900px;
+  margin: 20px auto;
 }
 
-.box {
-  width: 90%;
-  padding: 10px;
-  margin: 10px;
+.video {
+  flex: 1;
 }
 
-.box img,
-.box iframe {
-width: 300px;
-height: 250px;
-object-fit: cover;
+.description {
+  flex: 1;
+  font-family: Arial, sans-serif;
 }
-
-.videoWrapper {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 */
-    height: 0;
-  }
-  .videoWrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 50%;
-  }
 
