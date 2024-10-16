@@ -16,7 +16,7 @@ function login() {
                 if (userData.password === password) {
                     // Store username in sessionStorage for this session
                     sessionStorage.setItem('username', normalizedUsername);
-                    window.location.href = "forum.html";
+                    window.location.href = "/homepage/homepage1.html";
                 } else {
                     alert("Incorrect password. Please try again.");
                 }
