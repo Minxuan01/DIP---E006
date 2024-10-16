@@ -1,72 +1,64 @@
-* {
+/* General Styles */
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #d3d3d3;
 }
 
-body {
-    background-color: #D3D3D3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Arial Black', sans-serif;
-}
-
+/* Container */
 .container {
     text-align: center;
-    background-color: #D3D3D3;
-    padding: 40px;
+    padding: 20px;
 }
 
+/* Welcome Header */
 .header h1 {
     color: red;
-    font-size: 50px;
-    font-family: 'Arial Black', sans-serif;
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .header p {
-    font-size: 20px;
-    margin-top: 10px;
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: black;
 }
 
+/* Grid Layout for Buttons */
 .button-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
-    justify-content: center;
-    margin-top: 50px;
+    justify-items: center;
 }
 
+/* Button Wrapper */
 .button-wrapper {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* Icon Styles */
 .icon {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     margin-bottom: 10px;
 }
 
+/* Custom Button Styles */
 .custom-button {
-    background-color: #FF0000; /* Red button background */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: red;
     color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
     font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.custom-button.news {
-    background-color: #FF0000; /* Yellow background for the News button */
 }
 
 .custom-button:hover {
-    background-color: #D40000; /* Darker red on hover */
-}
-
-.custom-button.news:hover {
-    background-color: #E6AC00; /* Darker yellow on hover for the News button */
+    background-color: darkred;
 }
