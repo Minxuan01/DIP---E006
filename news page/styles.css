@@ -89,5 +89,6 @@ button {
 .description {
   flex: 1;
   font-family: Arial, sans-serif;
+  align-self: center;
 }
 
