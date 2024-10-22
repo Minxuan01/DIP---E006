@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "283540510655",
+    "firebase_url": "https://sign-up-or-log-in-c0e0c-default-rtdb.firebaseio.com",
+    "project_id": "sign-up-or-log-in-c0e0c",
+    "storage_bucket": "sign-up-or-log-in-c0e0c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283540510655:android:1418a73886f0accbf7b30a",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.FinalGame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn8GuL5CJ9ryJRX9SQODlm9cYMOpCpoj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283540510655:android:f345d182be99aa07f7b30a",
+        "android_client_info": {
+          "package_name": "com.example.signuporlogin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn8GuL5CJ9ryJRX9SQODlm9cYMOpCpoj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
