@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    max-width: 800px;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #b8322b;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+h1 span {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.image-container img {
+    max-width: 300px;
+    height: auto;
+}
+
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: #b8322b;
+    color: white;
+    text-decoration: none;
+    padding: 15px 40px;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-top: 20px; /* This is for the space above the button */
+    font-weight: bold;
+}
+
+.download-button img {
+    margin-right: 10px;
+    width: 24px;
+    height: auto;
+}
+
+.description {
+    color: #4a4a4a;
+    font-size: 1rem;
+    margin-top: 300px; /* Significantly increased margin for larger gap */
+    max-width: 600px;
+    line-height: 1.6;
+    margin: 0 auto;
+}
+
+
