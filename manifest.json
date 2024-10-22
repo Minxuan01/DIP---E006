@@ -4,7 +4,7 @@
   "start_url": "https://ee3180-smapps.web.app/",
   "icons":[
     {
-      "src": "assets/logo.png",
+      "src": "assets/logo.png"
     }
   ],
   "display": "standalone",
