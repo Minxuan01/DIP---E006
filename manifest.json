@@ -1,10 +1,10 @@
 {
   "name": "GoodCause",
   "short_name": "GoodCause",
-  "start_url": "https://ee3180-smapps.web.app/",
+  "start_url": "/index.html",
   "icons":[
     {
-      "src": "assets/logo.png"
+      "src": "/assets/logo.png"
     }
   ],
   "display": "standalone",
