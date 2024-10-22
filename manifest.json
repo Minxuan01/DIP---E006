@@ -2,6 +2,12 @@
   "name": "GoodCause",
   "short_name": "GoodCause",
   "start_url": "https://ee3180-smapps.web.app/",
+  "icons":[
+    {
+      "src": "assets/logo.png",
+    }
+  ],
+  "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#000000"
 }
