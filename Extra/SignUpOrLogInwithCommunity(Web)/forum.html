@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Forum</title>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Community Forum</h1>
+    </div>
+    <div class="main">
+        <h2>Create a New Thread</h2>
+        <textarea id="new-thread-title" placeholder="Thread Title"></textarea>
+        <textarea id="new-thread-content" placeholder="Thread Content"></textarea>
+        <button id="add-thread">Add Thread</button>
+
+        <h2>Threads</h2>
+        <ol id="thread-list"></ol>
+    </div>
+
+    <!-- Firebase configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8TxfmLqCgjQVylml_4CyhIBlaZ8sVSnM",
+            authDomain: "sign-up-or-log-in-c0e0c.firebaseapp.com",
+            databaseURL: "https://sign-up-or-log-in-c0e0c-default-rtdb.firebaseio.com",
+            projectId: "sign-up-or-log-in-c0e0c",
+            storageBucket: "sign-up-or-log-in-c0e0c.appspot.com",
+            messagingSenderId: "283540510655",
+            appId: "1:283540510655:web:e9efd3bf0f084e4bf7b30a"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Check authentication and load threads
+        function checkAuth() {
+            const username = sessionStorage.getItem('username');
+            console.log('Checking auth: username from sessionStorage:', username);
+            if (username) {
+                console.log('User logged in:', username);
+                loadThreads();
+            }
+        }
+
+        // Load threads from Firebase
+        async function loadThreads() {
+            try {
+                const threadsRef = db.ref('threads');
+                const snapshot = await threadsRef.once('value');
+                const threads = snapshot.val();
+                if (threads) {
+                    const sortedThreads = Object.values(threads).sort((a, b) => {
+                        // Sort by date (newest first)
+                        const dateA = new Date(a.date).setHours(0, 0, 0, 0); // Normalize to date only
+                        const dateB = new Date(b.date).setHours(0, 0, 0, 0);
+                        
+                        if (dateB !== dateA) {
+                            return dateB - dateA; // Newest first
+                        }
+
+                        // For threads created on the same date, sort by upvotes (highest first)
+                        return b.upvotes - a.upvotes;
+                    });
+                    sortedThreads.forEach(thread => addThread(thread));
+                } else {
+                    console.log('No threads found');
+                }
+            } catch (error) {
+                console.error('Error loading threads:', error);
+            }
+        }
+
+        // Add thread to the page
+        function addThread(thread) {
+            const container = document.querySelector('#thread-list');
+            const html = `
+                <li class="row">
+                    <div class="thread-container">
+                        <a href="thread.html?id=${thread.id}" class="thread-link">
+                            <h4 class="title">${thread.title}</h4>
+                            <div class="bottom">
+                                <p class="author">by ${thread.author}</p>
+                                <p class="timestamp">${new Date(thread.date).toLocaleString()}</p>
+                                <p class="comment-count">${thread.comments ? thread.comments.length : 0} comments</p>
+                            </div>
+                            <div class="thread-content-preview">
+                                <p>${thread.content}</p>
+                            </div>
+                        </a>
+                        <div class="voting">
+                            <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
+                            <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
+                        </div>
+                    </div>
+                </li>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        // Add new thread to Firebase
+        async function addNewThread() {
+            try {
+                const title = document.getElementById('new-thread-title').value;
+                const content = document.getElementById('new-thread-content').value;
+                const username = sessionStorage.getItem('username');
+
+                if (username && title && content) {
+                    const newThread = {
+                        title: title,
+                        author: username,
+                        date: Date.now(),
+                        content: content,
+                        comments: [],
+                        upvotes: 0,
+                        downvotes: 0
+                    };
+
+                    const newThreadRef = db.ref('threads').push();
+                    newThread.id = newThreadRef.key;
+                    await newThreadRef.set(newThread);
+                    addThread(newThread);
+
+                    document.getElementById('new-thread-title').value = '';
+                    document.getElementById('new-thread-content').value = '';
+                } else {
+                    alert('Please log in and fill in both the title and content!');
+                }
+            } catch (error) {
+                console.error('Error adding new thread:', error);
+            }
+        }
+
+        // Vote on a thread
+        async function voteThread(event, threadId, voteType) {
+            event.stopPropagation();
+            try {
+                const threadRef = db.ref(`threads/${threadId}`);
+                const snapshot = await threadRef.once('value');
+                const data = snapshot.val();
+                if (data) {
+                    data[voteType] += 1;
+                    await threadRef.update(data);
+                    updateVoteUI(threadId, voteType, data[voteType]);
+                }
+            } catch (error) {
+                console.error('Error voting on thread:', error);
+            }
+        }
+
+        // Update vote UI
+        function updateVoteUI(threadId, voteType, newVoteCount) {
+            const button = document.querySelector(`[onclick*="${threadId}"][onclick*="${voteType}"]`);
+            button.textContent = voteType === 'upvotes' ? `▲ ${newVoteCount}` : `▼ ${newVoteCount}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const addButton = document.getElementById('add-thread');
+            if (addButton) {
+                addButton.addEventListener('click', addNewThread);
+            } else {
+                console.error('Add thread button not found');
+            }
+            checkAuth(); // Check authentication and load threads
+        });
+    </script>
+    <style>
+        body {
+            margin: 5px 60px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        h1, h4, ol, h2 {
+            margin: 0;
+        }
+        p {
+            margin: 5px 0;
+        }
+        textarea {
+            width: 80%;
+            height: 40px;
+            margin: 5px 0;
+        }
+        button {
+            display: block;
+            margin: 10px 0;
+        }
+        .top-bar {
+            background-color: rgb(244, 129, 100);
+            padding: 0 40px;
+        }
+        .main {
+            background-color: #F6F6EF;
+            padding: 10px 40px;
+        }
+        .row {
+            padding: 5px 0;
+        }
+        .bottom {
+            display: flex;
+            color: grey;
+            font-size: 12px;
+        }
+        .author {
+            padding-right: 10px;
+        }
+        .timestamp {
+            padding-right: 10px;
+        }
+        .thread-content-preview {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+            white-space: pre-wrap;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        .voting {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+        .upvote, .downvote {
+            margin-right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+        }
+        .upvote:hover, .downvote:hover {
+            color: #000;
+        }
+        .thread-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .thread-link {
+            flex-grow: 1;
+        }
+    </style>
+</body>
+</html>
