@@ -92,3 +92,17 @@ button {
   align-self: center;
 }
 
+/* Media Queries for responsiveness */
+@media (min-width: 600px) {
+  .container {
+    flex-direction: row; /* Switch to row layout on larger screens */
+  }
+
+  .video,
+  .description {
+    flex: 1; /* Share space equally on larger screens */
+  }
+
+  .description {
+    align-self: center; /* Center description vertically */
+  }
