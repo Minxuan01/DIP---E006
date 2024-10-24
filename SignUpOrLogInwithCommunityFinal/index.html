@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Page</title>
+    <link rel="manifest" href="manifest.json" />
+    <script>
+        // if browser supports service worker
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('sw.js')
+            .then((reg) => console.log('service worker registered', reg))
+            .catch((err) => console.log('service worker not registered', err));
+        };
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d3d3d3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .logo-container {
+            position: relative;
+            top: 40px;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            transform: scale(2.5); /* Scale the logo to 250% */
+        }
+
+        .tagline {
+            margin-top: 50px; /* Bring the tagline closer to the logo */
+        }
+
+        .tagline .main-title {
+            color: #ea3323; /* Red color */
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .tagline .sub-text {
+            font-size: 14px; /* Smaller text */
+            color: #333; /* Regular dark color */
+            font-weight: normal; /* Not bold */
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px; /* Reduced padding */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px; /* Reduced width */
+            width: 100%;
+            margin-top: 50px; /* Bring the white box up */
+        }
+
+        .button-container {
+            margin-top: 10px; /* Reduce the space above buttons */
+            margin-bottom: 20px; /* Bring the buttons up slightly */
+        }
+
+        .custom-button {
+            display: block;
+            background-color: #ea3323;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .custom-button:hover {
+            background-color: #b02a1d;
+        }
+
+        .qr-code-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px; /* Reduce space between QR codes */
+            margin-top: 10px; /* Bring QR codes up slightly */
+        }
+
+        .qr-code img {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+        }
+
+        .qr-code p {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* New download buttons */
+        .download-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ea3323;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin-top: 10px; /* Space above the download buttons */
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            gap: 10px; /* Space between icon and text */
+        }
+
+        .download-button img {
+            width: 20px; /* Small icon size */
+            height: 20px;
+        }
+
+        .download-button:hover {
+            background-color: #b02a1d;
+        }
+
+        @media (max-width: 400px) {
+            .qr-code-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qr-code {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img src="Logo.png" alt="Logo" class="logo">
+        <div class="tagline">
+            <div class="main-title">GOOD CAUSE</div>
+            <div class="sub-text">
+                Vaping is a cloudy future, quit for clarity. It’s better to do math than to do meth!
+            </div>
+        </div>
+    </div>
+
+    <!-- White Box Section -->
+    <div class="container">
+        <div class="button-container">
+            <a href="/SignUpOrLogInwithCommunityFinal/signup.html" class="custom-button">Create An Account</a>
+            <a href="/SignUpOrLogInwithCommunityFinal/login.html" class="custom-button">I already have an account</a>
+        </div>
+        
+        <!-- QR code section -->
+        <div class="qr-code-container">
+            <div class="qr-code">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="Android Platform">
+                <!-- Download button for Android with logo -->
+                <a href="#" class="download-button">
+                    <img src="android.png" alt="Android Logo">For Android Platform
+                </a>
+            </div>
+            <div class="qr-code">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="iOS Platform">
+                <!-- Download button for iOS with logo -->
+                <a href="#" class="download-button">
+                    <img src="ios.png" alt="iOS Logo">For iOS Platform
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

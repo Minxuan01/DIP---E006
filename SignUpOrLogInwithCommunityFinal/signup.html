@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Sign Up</h2>
+
+        <!-- Signup Form -->
+        <form id="signupForm" onsubmit="event.preventDefault(); signUp();">
+            <input type="text" id="signup-username" placeholder="Username" required><br>
+            <input type="password" id="signup-password" placeholder="Password" required><br>
+            <button type="submit">Sign Up</button><br>
+        </form>
+
+        <p>Already a user? <a href="login.html">Login</a></p>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+
+    <!-- Your Firebase configuration -->
+    <script src="firebase-config.js"></script>
+
+    <!-- Signup logic -->
+    <script type="module" src="signup.js"></script> <!-- Updated line -->
+</body>
+</html>
+
+
+
