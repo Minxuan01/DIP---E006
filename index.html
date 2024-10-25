@@ -167,18 +167,36 @@
             <div class="qr-code">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="Android Platform">
                 <!-- Download button for Android with logo -->
-                <a href="#" class="download-button">
+                <a href="#" id="install" class="download-button">
                     <img src="android.png" alt="Android Logo">For Android Platform
                 </a>
             </div>
             <div class="qr-code">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="iOS Platform">
                 <!-- Download button for iOS with logo -->
-                <a href="#" class="download-button">
+                <a href="#" id="install" class="download-button">
                     <img src="ios.png" alt="iOS Logo">For iOS Platform
                 </a>
             </div>
         </div>
     </div>
+    <script>
+        let installPrompt = null;
+        const installButton = document.querySelectorAll("#install");
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+            event.preventDefault();
+            installPrompt = event;
+        });
+
+        installButton.addEventListener("click", async () => {
+            if (!installPrompt) {
+                return;
+            }
+            const result = await installPrompt.prompt();
+            console.log(`Install prompt was: ${result.outcome}`);
+            installPrompt = null;
+        });
+    </script>
 </body>
 </html>
