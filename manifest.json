@@ -4,7 +4,7 @@
   "start_url": "/",
   "icons":[
     {
-      "src": "/assets/logo.png",
+      "src": "Logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
