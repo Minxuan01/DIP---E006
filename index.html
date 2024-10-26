@@ -165,37 +165,37 @@
         <!-- QR code section -->
         <div class="qr-code-container">
             <div class="qr-code">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="Android Platform">
+                <img src="/assets/frame.png" alt="Android Platform">
                 <!-- Download button for Android with logo -->
                 <a href="#" id="install" class="download-button">
                     <img src="android.png" alt="Android Logo">For Android Platform
                 </a>
             </div>
-            <div class="qr-code">
+            <!-- <div class="qr-code">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="iOS Platform">
-                <!-- Download button for iOS with logo -->
+                Download button for iOS with logo 
                 <a href="#" id="install" class="download-button">
                     <img src="ios.png" alt="iOS Logo">For iOS Platform
                 </a>
-            </div>
+            </div> -->
         </div>
     </div>
     <script>
-        let installPrompt = null;
-        const installButton = document.querySelectorAll("#install");
+        let deferredPrompt;
 
         window.addEventListener("beforeinstallprompt", (event) => {
             event.preventDefault();
-            installPrompt = event;
+            deferredPrompt = event;
         });
-
-        installButton.addEventListener("click", async () => {
-            if (!installPrompt) {
+        
+        document.getElementById("installButton").addEventListener('click', async() => {
+            if (!deferredPrompt) {
                 return;
             }
-            const result = await installPrompt.prompt();
-            console.log(`Install prompt was: ${result.outcome}`);
-            installPrompt = null;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            deferredPrompt = null;
         });
     </script>
 </body>
