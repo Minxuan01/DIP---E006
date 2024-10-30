@@ -86,25 +86,6 @@
             background-color: #b02a1d;
         }
 
-        .qr-code-container {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px; /* Reduce space between QR codes */
-            margin-top: 10px; /* Bring QR codes up slightly */
-        }
-
-        .qr-code img {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-        }
-
-        .qr-code p {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #333;
-        }
-
         /* New download buttons */
         .download-button {
             display: flex;
@@ -130,18 +111,6 @@
             background-color: #b02a1d;
         }
         
-        /*
-        @media (max-width: 400px) {
-            .qr-code-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .qr-code {
-                margin-bottom: 15px;
-            }
-        }
-        */
     </style>
 </head>
 <body>
@@ -162,23 +131,13 @@
             <a href="/SignUpOrLogInwithCommunityFinal/login.html" class="custom-button">I already have an account</a>
         </div>
         
-        <!-- QR code section -->
-        <div class="qr-code-container">
-            <div class="qr-code">
-                <!-- QR code image to be updated for new site -->
                 <img src="/assets/GoodCause.png" alt="Android Platform">
                 <!-- Download button for Android with logo -->
                 <a href="#" id="install" class="download-button">
                     <img src="android.png" alt="Android Logo">For Android Platform
                 </a>
             </div>
-            <!-- <div class="qr-code">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="iOS Platform">
-                Download button for iOS with logo 
-                <a href="#" id="install" class="download-button">
-                    <img src="ios.png" alt="iOS Logo">For iOS Platform
-                </a>
-            </div> -->
+
         </div>
     </div>
     <script>
