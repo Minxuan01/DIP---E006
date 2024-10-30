@@ -18,7 +18,7 @@
             padding: 0;
             background-color: #f9f9f9;
         }
-    
+
         /* Top bar */
         .top-bar {
             background-color: #ea3323;
@@ -27,21 +27,40 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-    
+
         .top-bar img {
             width: 50px;
             height: auto;
-            margin-right: 10px; /* Space between logo and text */
+            margin-right: 10px;
         }
-    
+
         .top-bar h1 {
             margin: 0;
             font-size: 28px;
             color: white;
             font-weight: bold;
         }
-    
+
+        /* Back button */
+        .top-bar button {
+            position: absolute;
+            right: 10px;
+            background-color: #000;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-bar button:hover {
+            background-color: #333;
+        }
+
         /* Main content styling */
         .main {
             max-width: 900px;
@@ -51,14 +70,14 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-    
+
         /* Section titles */
         h2 {
             font-size: 24px;
             color: #333;
             margin-bottom: 20px;
         }
-    
+
         /* Textarea styling */
         textarea {
             width: 100%;
@@ -68,21 +87,21 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #f7f7f7;
-            box-sizing: border-box; /* Ensures padding is within the box */
+            box-sizing: border-box;
         }
-    
+
         textarea#new-thread-title {
-            height: 50px; /* Taller for the title input */
+            height: 50px;
         }
-    
+
         textarea#new-thread-content {
-            height: 150px; /* More space for content */
+            height: 150px;
         }
-    
+
         textarea::placeholder {
             color: #aaa;
         }
-    
+
         /* Button styling */
         button {
             background-color: #000000;
@@ -94,29 +113,28 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-    
+
         button:hover {
-            background-color:  #000000;
+            background-color:  #333;
         }
-    
+
         /* Remove underline from thread links */
         .thread-link {
             text-decoration: none;
         }
-    
-        /* Optionally, on hover, change the link color but still no underline */
+
         .thread-link:hover h4 {
-            color: #ea3323; /* Highlight color when hovering */
+            color: #ea3323;
             text-decoration: none;
         }
-    
+
         /* Thread list */
         ol {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
-    
+
         /* Thread container styling */
         .thread-container {
             display: flex;
@@ -128,20 +146,17 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: box-shadow 0.3s ease;
         }
-    
-        /* Thread hover effect */
+
         .thread-container:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-    
-        /* Thread title */
+
         .thread-link h4 {
             font-size: 20px;
             color: #000000;
             margin: 0 0 10px 0;
         }
-    
-        /* Thread content preview */
+
         .thread-content-preview {
             font-size: 14px;
             color: #555;
@@ -151,8 +166,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-    
-        /* Bottom section (author, timestamp, comments) */
+
         .bottom {
             display: flex;
             flex-direction: column;
@@ -160,15 +174,14 @@
             color: #777;
             margin-top: 10px;
         }
-    
-        /* Voting buttons */
+
         .voting {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-    
+
         .voting button {
             background-color: #ea3323;
             border: none;
@@ -180,35 +193,35 @@
             margin: 5px 0;
             width: 50px;
         }
-    
+
         .voting button:hover {
-            background-color:  #ea3323;
+            background-color: #ea3323;
         }
-    
+
         /* Responsive layout */
         @media (max-width: 768px) {
             .main {
                 padding: 15px;
                 margin: 10px;
             }
-    
+
             .top-bar h1 {
                 font-size: 22px;
             }
-    
+
             button {
                 width: 100%;
             }
         }
     </style>
-    
 </head>
 <body>
 
-    <!-- Top bar with logo and title -->
+    <!-- Top bar with logo, title, and back button -->
     <div class="top-bar">
         <img src="Community Forum.png" alt="Logo">
         <h1>Community Forum</h1>
+        <button id="back">Back</button> <!-- Added back button -->
     </div>
 
     <!-- Main content section -->
@@ -244,11 +257,7 @@
             const snapshot = await threadsRef.once('value');
             const threads = snapshot.val();
             if (threads) {
-                const sortedThreads = Object.values(threads).sort((a, b) => {
-                    const dateA = new Date(a.date).setHours(0, 0, 0, 0);
-                    const dateB = new Date(b.date).setHours(0, 0, 0, 0);
-                    return dateB - dateA;
-                });
+                const sortedThreads = Object.values(threads).sort((a, b) => new Date(b.date) - new Date(a.date));
                 sortedThreads.forEach(thread => addThread(thread));
             }
         }
@@ -319,6 +328,10 @@
         // Add new thread event listener
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('add-thread').addEventListener('click', addNewThread);
+            document.getElementById('back').addEventListener('click', () => {
+                window.location.href = '/homepagev2/hmtl.html'; // Redirect to homepage
+                
+            });
             loadThreads();
         });
     </script>

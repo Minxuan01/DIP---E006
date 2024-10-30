@@ -19,10 +19,9 @@
         }
 
         /* Top bar */
-        /* Top bar */
         .top-bar {
             background-color: #ea3323;
-            padding: 40px 0; /* Increased padding for a bigger red bar */
+            padding: 40px 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -33,7 +32,7 @@
         /* Title Styling */
         .top-bar h1 {
             margin: 0;
-            font-size: 36px; /* Increased font size */
+            font-size: 36px;
             color: white;
             font-weight: bold;
             text-align: center;
@@ -42,7 +41,6 @@
             left: 0;
             right: 0;
         }
-
 
         .top-bar button {
             background-color: #000;
@@ -53,6 +51,8 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            position: absolute;
+            right: 10px;
         }
 
         .top-bar button:hover {
@@ -91,7 +91,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #f7f7f7;
-            box-sizing: border-box; /* Ensures padding is within the box */
+            box-sizing: border-box;
         }
 
         textarea::placeholder {
@@ -157,10 +157,10 @@
     </style>
 </head>
 <body>
-    <!-- Top bar with thread title and logout button -->
+    <!-- Top bar with thread title and back button -->
     <div class="top-bar">
         <h1>Thread</h1>
-        <button id="logout" style="position: absolute; right: 20px;">Logout</button> <!-- Position Logout button properly -->
+        <button id="back">Back</button>
     </div>
 
     <!-- Main content section -->
@@ -266,16 +266,15 @@
             }
         }
 
-        // Handle logout
-        function handleLogout() {
-            sessionStorage.removeItem('username');
-            window.location.href = 'login.html';
+        // Redirect to forum.html when the back button is clicked
+        function handleBack() {
+            window.location.href = 'forum.html';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             loadThread(); // Load thread details and comments
             document.getElementById('add-comment').addEventListener('click', addNewComment);
-            document.getElementById('logout').addEventListener('click', handleLogout);
+            document.getElementById('back').addEventListener('click', handleBack);
         });
     </script>
 </body>
