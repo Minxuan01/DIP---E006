@@ -6,8 +6,8 @@ function generateRecoveryCode() {
 }
 
 function signUp() {
-    const username = document.getElementById('signup-username').value;
-    const password = document.getElementById('signup-password').value;
+    const username = document.getElementById('signup-username').value.trim().toLowerCase();
+    const password = document.getElementById('signup-password').value.trim();
 
     if (username && password) {
         
