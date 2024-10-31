@@ -259,108 +259,96 @@ function extractDate(timestamp) {
 
 // Function to load threads from Firebase
 async function loadThreads() {
-    const threadsRef = db.ref('threads');
-    const snapshot = await threadsRef.once('value');
-    const threads = snapshot.val();
+        const threadsRef = db.ref('threads');
+        const snapshot = await threadsRef.once('value');
+        const threads = snapshot.val();
 
-    if (threads) {
-        // Group threads by date
-        const groupedByDate = {};
-        Object.values(threads).forEach(thread => {
-            const date = extractDate(thread.date);
-            if (!groupedByDate[date]) {
-                groupedByDate[date] = [];
-            }
-            groupedByDate[date].push(thread);
-        });
-
-        // Sort threads within each date group by upvotes, then sort dates in descending order
-        const sortedThreads = Object.keys(groupedByDate)
-            .sort((a, b) => b.localeCompare(a)) // Sort dates descending
-            .flatMap(date => 
-                groupedByDate[date].sort((a, b) => b.upvotes - a.upvotes) // Sort threads by upvotes within each date
-            );
-
-        // Add sorted threads to the page
-        document.getElementById('thread-list').innerHTML = ''; // Clear existing threads
-        sortedThreads.forEach(thread => addThread(thread));
-    }
-}
-
-
-
-        // Add new thread to Firebase
-        async function addNewThread() {
-            const title = document.getElementById('new-thread-title').value;
-            const content = document.getElementById('new-thread-content').value;
-            const username = sessionStorage.getItem('username');
-            if (username && title && content) {
-                const newThread = {
-                    title: title,
-                    author: username,
-                    date: Date.now(),
-                    content: content,
-                    comments: [],
-                    upvotes: 0,
-                    downvotes: 0
-                };
-                const newThreadRef = db.ref('threads').push();
-                newThread.id = newThreadRef.key;
-                await newThreadRef.set(newThread);
-                addThread(newThread);
-                document.getElementById('new-thread-title').value = '';
-                document.getElementById('new-thread-content').value = '';
-            }
-        }
-
-        // Add thread to the page
-        function addThread(thread) {
-            const container = document.querySelector('#thread-list');
-            const html = `
-                <li class="row">
-                    <div class="thread-container">
-                        <a href="thread.html?id=${thread.id}" class="thread-link">
-                            <h4>${thread.title}</h4>
-                            <div class="thread-content-preview">${thread.content}</div>
-                            <div class="bottom">
-                                <p>by ${thread.author}</p>
-                                <p>${new Date(thread.date).toLocaleString()}</p>
-                                <p>${thread.comments ? thread.comments.length : 0} comments</p>
-                            </div>
-                        </a>
-                        <div class="voting">
-                            <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
-                            <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
-                        </div>
-                    </div>
-                </li>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        // Handle vote functionality
-        async function voteThread(event, threadId, voteType) {
-            event.stopPropagation();
-            const threadRef = db.ref(`threads/${threadId}`);
-            const snapshot = await threadRef.once('value');
-            const data = snapshot.val();
-            if (data) {
-                data[voteType] += 1;
-                await threadRef.update(data);
-                const button = document.querySelector(`[onclick*="${threadId}"][onclick*="${voteType}"]`);
-                button.textContent = voteType === 'upvotes' ? `▲ ${data.upvotes}` : `▼ ${data.downvotes}`;
-            }
-        }
-
-        // Add new thread event listener
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('add-thread').addEventListener('click', addNewThread);
-            document.getElementById('back').addEventListener('click', () => {
-                window.location.href = '/homepagev2/hmtl.html'; // Redirect to homepage
-                
+        if (threads) {
+            // Group threads by date
+            const groupedByDate = {};
+            Object.values(threads).forEach(thread => {
+                const date = extractDate(thread.date);
+                if (!groupedByDate[date]) {
+                    groupedByDate[date] = [];
+                }
+                groupedByDate[date].push(thread);
             });
-            loadThreads();
+
+            // Sort threads within each date group by upvotes, then sort dates in descending order
+            const sortedThreads = Object.keys(groupedByDate)
+                .sort((a, b) => a.localeCompare(b)) // Sort dates descending
+                .flatMap(date => 
+                    groupedByDate[date].sort((a, b) => a.upvotes - b.upvotes) // Sort threads by upvotes within each date
+                );
+
+            // Add sorted threads to the page
+            document.getElementById('thread-list').innerHTML = ''; // Clear existing threads
+            sortedThreads.forEach(thread => addThread(thread, true)); // Pass true to add at the top
+        }
+    }
+
+    // Add new thread to Firebase
+    async function addNewThread() {
+        const title = document.getElementById('new-thread-title').value;
+        const content = document.getElementById('new-thread-content').value;
+        const username = sessionStorage.getItem('username');
+        if (username && title && content) {
+            const newThread = {
+                title: title,
+                author: username,
+                date: Date.now(),
+                content: content,
+                comments: [],
+                upvotes: 0,
+                downvotes: 0
+            };
+            const newThreadRef = db.ref('threads').push();
+            newThread.id = newThreadRef.key;
+            await newThreadRef.set(newThread);
+            loadThreads(); // Reload threads to apply sorting
+            document.getElementById('new-thread-title').value = '';
+            document.getElementById('new-thread-content').value = '';
+        }
+    }
+
+    // Add thread to the page with an option to insert at the top
+    function addThread(thread, addToTop = false) {
+        const container = document.querySelector('#thread-list');
+        const html = `
+            <li class="row">
+                <div class="thread-container">
+                    <a href="thread.html?id=${thread.id}" class="thread-link">
+                        <h4>${thread.title}</h4>
+                        <div class="thread-content-preview">${thread.content}</div>
+                        <div class="bottom">
+                            <p>by ${thread.author}</p>
+                            <p>${new Date(thread.date).toLocaleString()}</p>
+                            <p>${thread.comments ? thread.comments.length : 0} comments</p>
+                        </div>
+                    </a>
+                    <div class="voting">
+                        <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
+                        <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
+                    </div>
+                </div>
+            </li>
+        `;
+        if (addToTop) {
+            container.insertAdjacentHTML('afterbegin', html); // Add new threads to the top
+        } else {
+            container.insertAdjacentHTML('beforeend', html); // Add sorted threads at the bottom
+        }
+    }
+
+    // Add new thread event listener
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('add-thread').addEventListener('click', addNewThread);
+        document.getElementById('back').addEventListener('click', () => {
+            window.location.href = '/homepagev2/hmtl.html'; // Redirect to homepage
         });
-    </script>
+        loadThreads();
+    });
+</script>
+
 </body>
 </html>
