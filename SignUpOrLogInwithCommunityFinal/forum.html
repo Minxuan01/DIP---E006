@@ -258,31 +258,34 @@ function extractDate(timestamp) {
 }
 
 
-// Load threads from Firebase with layered sorting
+// Load threads from Firebase with refined sorting logic
 async function loadThreads() {
     const threadsRef = db.ref('threads');
     const snapshot = await threadsRef.once('value');
     const threads = snapshot.val();
 
     if (threads) {
-        // Convert threads to an array for easier sorting
+        // Convert threads to an array and sort them
         const threadArray = Object.values(threads);
 
-        // Sort threads by date first, then by upvotes within the same date
+        // Sort by date in descending order, then by upvotes, and lastly by timestamp
         threadArray.sort((a, b) => {
-            const dateA = new Date(a.date).toISOString().split('T')[0]; // Extract date in 'YYYY-MM-DD' format
-            const dateB = new Date(b.date).toISOString().split('T')[0];
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
 
-            if (dateA !== dateB) {
-                // Sort by date in descending order
-                return new Date(dateB) - new Date(dateA);
-            } else {
-                // Sort by upvotes in descending order within the same date
+            if (dateA.toDateString() !== dateB.toDateString()) {
+                // Sort by date only (YYYY-MM-DD)
+                return dateB - dateA;
+            } else if (b.upvotes !== a.upvotes) {
+                // Sort by upvotes within the same date
                 return b.upvotes - a.upvotes;
+            } else {
+                // Sort by timestamp if upvotes are equal
+                return dateB.getTime() - dateA.getTime();
             }
         });
 
-        // Clear the thread list and add sorted threads to the page
+        // Clear the thread list and render sorted threads on the page
         document.getElementById('thread-list').innerHTML = '';
         threadArray.forEach(thread => addThread(thread));
     }
@@ -351,8 +354,11 @@ async function loadThreads() {
             const snapshot = await threadRef.once('value');
             const data = snapshot.val();
             if (data) {
+                // Update the vote count in the database
                 data[voteType] += 1;
                 await threadRef.update(data);
+
+                // Update the vote count on the page immediately
                 const button = event.currentTarget;
                 button.textContent = voteType === 'upvotes' ? `▲ ${data.upvotes}` : `▼ ${data.downvotes}`;
             }
