@@ -329,20 +329,38 @@
     }
 
 
-    // Function to handle upvoting or downvoting with immediate UI update
+    // Function to handle voting
     async function voteThread(event, threadId, voteType) {
-        event.stopPropagation();
+        event.stopPropagation(); // Prevent click event from bubbling up to the link
+
+        // Reference to the specific thread in the database
         const threadRef = db.ref(`threads/${threadId}`);
-        const snapshot = await threadRef.once('value');
-        const data = snapshot.val();
+        
+        // Get the current data for the thread
+        threadRef.once('value', snapshot => {
+            const data = snapshot.val();
+            
+            // Only proceed if data exists for this thread
+            if (data) {
+                const newVoteCount = (data[voteType] || 0) + 1; // Increment vote count
 
-        if (data) {
-            // Update the vote count in the database
-            const newVoteCount = data[voteType] + 1;
-            await threadRef.update({ [voteType]: newVoteCount });
+                // Prepare the update object and push to Firebase
+                const updates = {};
+                updates[voteType] = newVoteCount;
+                threadRef.update(updates).then(() => {
+                    // Update the UI immediately
+                    updateVoteUI(threadId, voteType, newVoteCount);
+                });
+            }
+        });
+    }
 
-            // Update the vote count on the page immediately
-            const button = event.currentTarget;
+    // Function to update the UI after voting
+    function updateVoteUI(threadId, voteType, newVoteCount) {
+        // Select the specific button for upvote or downvote based on thread ID and vote type
+        const button = document.querySelector(`button[onclick*="${threadId}"][onclick*="${voteType}"]`);
+        if (button) {
+            // Update the button text to reflect the new vote count
             button.textContent = voteType === 'upvotes' ? `▲ ${newVoteCount}` : `▼ ${newVoteCount}`;
         }
     }
