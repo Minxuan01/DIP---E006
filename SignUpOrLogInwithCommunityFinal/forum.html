@@ -328,6 +328,7 @@
         }
     }
 
+
     // Function to handle upvoting or downvoting with immediate UI update
     async function voteThread(event, threadId, voteType) {
         event.stopPropagation();
@@ -337,14 +338,15 @@
 
         if (data) {
             // Update the vote count in the database
-            data[voteType] += 1;
-            await threadRef.update(data);
+            const newVoteCount = data[voteType] + 1;
+            await threadRef.update({ [voteType]: newVoteCount });
 
             // Update the vote count on the page immediately
             const button = event.currentTarget;
-            button.textContent = voteType === 'upvotes' ? `▲ ${data.upvotes}` : `▼ ${data.downvotes}`;
+            button.textContent = voteType === 'upvotes' ? `▲ ${newVoteCount}` : `▼ ${newVoteCount}`;
         }
     }
+
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('add-thread').addEventListener('click', addNewThread);
