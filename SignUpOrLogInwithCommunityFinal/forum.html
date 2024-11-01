@@ -344,6 +344,19 @@ async function loadThreads() {
             container.insertAdjacentHTML('beforeend', html); // Add sorted threads at the bottom
         }
     }
+        // Handle vote functionality
+        async function voteThread(event, threadId, voteType) {
+            event.stopPropagation();
+            const threadRef = db.ref(`threads/${threadId}`);
+            const snapshot = await threadRef.once('value');
+            const data = snapshot.val();
+            if (data) {
+                data[voteType] += 1;
+                await threadRef.update(data);
+                const button = event.currentTarget;
+                button.textContent = voteType === 'upvotes' ? `▲ ${data.upvotes}` : `▼ ${data.downvotes}`;
+            }
+        }
 
     // Add new thread event listener
     document.addEventListener('DOMContentLoaded', function() {
