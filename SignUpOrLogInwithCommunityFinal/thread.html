@@ -216,7 +216,9 @@
                     document.getElementById('thread-content').textContent = threadData.content;
 
                     if (threadData.comments) {
-                        threadData.comments.forEach(comment => addComment(comment));
+                        for (const key in threadData.comments) {
+                            addComment(threadData.comments[key]);
+                        }
                     }
                 } else {
                     alert('Thread not found');
@@ -279,3 +281,5 @@
     </script>
 </body>
 </html>
+
+
