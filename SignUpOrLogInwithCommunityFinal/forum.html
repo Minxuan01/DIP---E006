@@ -302,7 +302,7 @@
 
         function addThread(thread, addToTop = false) {
             const container = document.querySelector('#thread-list');
-            const commentCount = thread.comments ? thread.comments.length : 0;  // Use 0 if comments array is undefined
+            const commentCount = thread.comments ? Object.keys(thread.comments).length : 0;  // Use 0 if comments array is undefined
             const html = `
                 <li class="row">
                     <div class="thread-container">
