@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.6">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Forum</title>
     <link rel="manifest" href="manifest.json" />
 
@@ -248,132 +248,131 @@
         };
 
         // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    // Function to load and display threads
-    async function loadThreads() {
-        const threadsRef = db.ref('threads');
-        const snapshot = await threadsRef.once('value');
-        const threads = snapshot.val();
+        // Function to load and display threads
+        async function loadThreads() {
+            const threadsRef = db.ref('threads');
+            const snapshot = await threadsRef.once('value');
+            const threads = snapshot.val();
 
-        if (threads) {
-            const threadArray = Object.values(threads);
+            if (threads) {
+                const threadArray = Object.values(threads);
 
-            threadArray.sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                if (dateA.toDateString() !== dateB.toDateString()) {
-                    return dateB - dateA;
-                } else if (b.upvotes !== a.upvotes) {
-                    return b.upvotes - a.upvotes;
-                } else {
-                    return dateB.getTime() - dateA.getTime();
+                threadArray.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    if (dateA.toDateString() !== dateB.toDateString()) {
+                        return dateB - dateA;
+                    } else if (b.upvotes !== a.upvotes) {
+                        return b.upvotes - a.upvotes;
+                    } else {
+                        return dateB.getTime() - dateA.getTime();
+                    }
+                });
+
+                document.getElementById('thread-list').innerHTML = '';
+                threadArray.forEach(thread => addThread(thread));
+            }
+        }
+
+        async function addNewThread() {
+            const title = document.getElementById('new-thread-title').value;
+            const content = document.getElementById('new-thread-content').value;
+            const username = sessionStorage.getItem('username');
+            if (username && title && content) {
+                const newThread = {
+                    title: title,
+                    author: username,
+                    date: Date.now(),
+                    content: content,
+                    comments: [],  // Initialize comments as an empty array
+                    upvotes: 0,
+                    downvotes: 0
+                };
+                const newThreadRef = db.ref('threads').push();
+                newThread.id = newThreadRef.key;
+                await newThreadRef.set(newThread);
+                loadThreads();
+                document.getElementById('new-thread-title').value = '';
+                document.getElementById('new-thread-content').value = '';
+            }
+        }
+
+        function addThread(thread, addToTop = false) {
+            const container = document.querySelector('#thread-list');
+            const commentCount = thread.comments ? thread.comments.length : 0;  // Use 0 if comments array is undefined
+            const html = `
+                <li class="row">
+                    <div class="thread-container">
+                        <a href="thread.html?id=${thread.id}" class="thread-link">
+                            <h4>${thread.title}</h4>
+                            <div class="thread-content-preview">${thread.content}</div>
+                            <div class="bottom">
+                                <p>by ${thread.author}</p>
+                                <p>${new Date(thread.date).toLocaleString()}</p>
+                                <p>${commentCount} comment${commentCount !== 1 ? 's' : ''}</p>  <!-- Correctly display singular or plural -->
+                            </div>
+                        </a>
+                        <div class="voting">
+                            <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
+                            <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
+                        </div>
+                    </div>
+                </li>
+            `;
+            if (addToTop) {
+                container.insertAdjacentHTML('afterbegin', html);
+            } else {
+                container.insertAdjacentHTML('beforeend', html);
+            }
+        }
+
+        // Function to handle voting
+        async function voteThread(event, threadId, voteType) {
+            event.stopPropagation(); // Prevent click event from bubbling up to the link
+
+            // Reference to the specific thread in the database
+            const threadRef = db.ref(`threads/${threadId}`);
+            
+            // Get the current data for the thread
+            threadRef.once('value', snapshot => {
+                const data = snapshot.val();
+                
+                // Only proceed if data exists for this thread
+                if (data) {
+                    const newVoteCount = (data[voteType] || 0) + 1; // Increment vote count
+
+                    // Prepare the update object and push to Firebase
+                    const updates = {};
+                    updates[voteType] = newVoteCount;
+                    threadRef.update(updates).then(() => {
+                        // Update the UI immediately
+                        updateVoteUI(threadId, voteType, newVoteCount);
+                    });
                 }
             });
-
-            document.getElementById('thread-list').innerHTML = '';
-            threadArray.forEach(thread => addThread(thread));
         }
-    }
 
-    async function addNewThread() {
-        const title = document.getElementById('new-thread-title').value;
-        const content = document.getElementById('new-thread-content').value;
-        const username = sessionStorage.getItem('username');
-        if (username && title && content) {
-            const newThread = {
-                title: title,
-                author: username,
-                date: Date.now(),
-                content: content,
-                comments: [],
-                upvotes: 0,
-                downvotes: 0
-            };
-            const newThreadRef = db.ref('threads').push();
-            newThread.id = newThreadRef.key;
-            await newThreadRef.set(newThread);
-            loadThreads();
-            document.getElementById('new-thread-title').value = '';
-            document.getElementById('new-thread-content').value = '';
-        }
-    }
-
-    function addThread(thread, addToTop = false) {
-        const container = document.querySelector('#thread-list');
-        const html = `
-            <li class="row">
-                <div class="thread-container">
-                    <a href="thread.html?id=${thread.id}" class="thread-link">
-                        <h4>${thread.title}</h4>
-                        <div class="thread-content-preview">${thread.content}</div>
-                        <div class="bottom">
-                            <p>by ${thread.author}</p>
-                            <p>${new Date(thread.date).toLocaleString()}</p>
-                            <p>${thread.comments ? thread.comments.length : 0} comments</p>
-                        </div>
-                    </a>
-                    <div class="voting">
-                        <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
-                        <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
-                    </div>
-                </div>
-            </li>
-        `;
-        if (addToTop) {
-            container.insertAdjacentHTML('afterbegin', html);
-        } else {
-            container.insertAdjacentHTML('beforeend', html);
-        }
-    }
-
-
-    // Function to handle voting
-    async function voteThread(event, threadId, voteType) {
-        event.stopPropagation(); // Prevent click event from bubbling up to the link
-
-        // Reference to the specific thread in the database
-        const threadRef = db.ref(`threads/${threadId}`);
-        
-        // Get the current data for the thread
-        threadRef.once('value', snapshot => {
-            const data = snapshot.val();
-            
-            // Only proceed if data exists for this thread
-            if (data) {
-                const newVoteCount = (data[voteType] || 0) + 1; // Increment vote count
-
-                // Prepare the update object and push to Firebase
-                const updates = {};
-                updates[voteType] = newVoteCount;
-                threadRef.update(updates).then(() => {
-                    // Update the UI immediately
-                    updateVoteUI(threadId, voteType, newVoteCount);
-                });
+        // Function to update the UI after voting
+        function updateVoteUI(threadId, voteType, newVoteCount) {
+            // Select the specific button for upvote or downvote based on thread ID and vote type
+            const button = document.querySelector(`button[onclick*="${threadId}"][onclick*="${voteType}"]`);
+            if (button) {
+                // Update the button text to reflect the new vote count
+                button.textContent = voteType === 'upvotes' ? `▲ ${newVoteCount}` : `▼ ${newVoteCount}`;
             }
-        });
-    }
-
-    // Function to update the UI after voting
-    function updateVoteUI(threadId, voteType, newVoteCount) {
-        // Select the specific button for upvote or downvote based on thread ID and vote type
-        const button = document.querySelector(`button[onclick*="${threadId}"][onclick*="${voteType}"]`);
-        if (button) {
-            // Update the button text to reflect the new vote count
-            button.textContent = voteType === 'upvotes' ? `▲ ${newVoteCount}` : `▼ ${newVoteCount}`;
         }
-    }
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('add-thread').addEventListener('click', addNewThread);
-        document.getElementById('back').addEventListener('click', () => {
-            window.location.href = '/homepagev2/hmtl.html';
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('add-thread').addEventListener('click', addNewThread);
+            document.getElementById('back').addEventListener('click', () => {
+                window.location.href = '/homepagev2/hmtl.html';
+            });
+            loadThreads();
         });
-        loadThreads();
-    });
-</script>
+    </script>
 
 </body>
 </html>
