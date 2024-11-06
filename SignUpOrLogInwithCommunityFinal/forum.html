@@ -221,7 +221,7 @@
     <div class="top-bar">
         <img src="Community Forum.png" alt="Logo">
         <h1>Community Forum</h1>
-        <button id="back">Back</button> <!-- Added back button -->
+        <button id="back">Back</button>
     </div>
 
     <!-- Main content section -->
@@ -301,33 +301,53 @@
         }
 
         function addThread(thread, addToTop = false) {
-            const container = document.querySelector('#thread-list');
-            const commentCount = thread.comments ? Object.keys(thread.comments).length : 0;  // Use 0 if comments array is undefined
-            const html = `
-                <li class="row">
-                    <div class="thread-container">
-                        <a href="thread.html?id=${thread.id}" class="thread-link">
-                            <h4>${thread.title}</h4>
-                            <div class="thread-content-preview">${thread.content}</div>
-                            <div class="bottom">
-                                <p>by ${thread.author}</p>
-                                <p>${new Date(thread.date).toLocaleString()}</p>
-                                <p>${commentCount} comment${commentCount !== 1 ? 's' : ''}</p>  <!-- Correctly display singular or plural -->
-                            </div>
-                        </a>
-                        <div class="voting">
-                            <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
-                            <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
-                        </div>
+    const container = document.querySelector('#thread-list');
+    const commentCount = thread.comments ? Object.keys(thread.comments).length : 0;
+    const loggedInUser = sessionStorage.getItem('username');  // Retrieve the logged-in user's name
+
+    const deleteButton = (loggedInUser === thread.author)
+        ? `<button class="delete-thread" onclick="deleteThread('${thread.id}')">Delete</button>`
+        : '';  // Only show the delete button if the logged-in user is the author
+
+    const html = `
+        <li class="row">
+            <div class="thread-container">
+                <a href="thread.html?id=${thread.id}" class="thread-link">
+                    <h4>${thread.title}</h4>
+                    <div class="thread-content-preview">${thread.content}</div>
+                    <div class="bottom">
+                        <p>by ${thread.author}</p>
+                        <p>${new Date(thread.date).toLocaleString()}</p>
+                        <p>${commentCount} comment${commentCount !== 1 ? 's' : ''}</p>
                     </div>
-                </li>
-            `;
-            if (addToTop) {
-                container.insertAdjacentHTML('afterbegin', html);
-            } else {
-                container.insertAdjacentHTML('beforeend', html);
-            }
-        }
+                </a>
+                ${deleteButton}
+                <div class="voting">
+                    <button class="upvote" onclick="voteThread(event, '${thread.id}', 'upvotes')">▲ ${thread.upvotes}</button>
+                    <button class="downvote" onclick="voteThread(event, '${thread.id}', 'downvotes')">▼ ${thread.downvotes}</button>
+                </div>
+            </div>
+        </li>
+    `;
+    if (addToTop) {
+        container.insertAdjacentHTML('afterbegin', html);
+    } else {
+        container.insertAdjacentHTML('beforeend', html);
+    }
+}
+
+// Function to delete a thread
+function deleteThread(threadId) {
+    if (confirm('Are you sure you want to delete this thread?')) {
+        const threadRef = db.ref(`threads/${threadId}`);
+        threadRef.remove().then(() => {
+            alert('Thread deleted successfully');
+            loadThreads();  // Reload threads after deletion
+        }).catch(error => {
+            console.error('Error deleting thread:', error);
+        });
+    }
+}
 
         // Function to handle voting
         async function voteThread(event, threadId, voteType) {
