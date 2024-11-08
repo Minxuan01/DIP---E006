@@ -1,7 +1,7 @@
 // Function to redirect to a specific URL when the button is clicked
 function redirectToDownload() {
     // Change this URL to the page or site you want to redirect to
-    window.location.href = 'https://entuedu-my.sharepoint.com/:u:/g/personal/tanj0304_e_ntu_edu_sg/EcxZTKLmkFZBqYBdQi5Pch4BRl4GJQqL4GbUSL4-rorWtA?e=eElu3q';
+    window.location.href = 'https://entuedu-my.sharepoint.com/:u:/g/personal/tanj0304_e_ntu_edu_sg/EcxZTKLmkFZBqYBdQi5Pch4BRl4GJQqL4GbUSL4-rorWtA?e=5SHM9Q';
 }
 
 // Adding event listener to the button
